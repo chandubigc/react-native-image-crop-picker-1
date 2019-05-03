@@ -47,6 +47,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import android.util.Log ;
 
 class PickerModule extends ReactContextBaseJavaModule implements ActivityEventListener {
 
@@ -461,6 +462,7 @@ class PickerModule extends ReactContextBaseJavaModule implements ActivityEventLi
     private void getAsyncSelection(final Activity activity, Uri uri, boolean isCamera) throws Exception {
         String path = resolveRealPath(activity, uri, isCamera);
         if (path == null || path.isEmpty()) {
+            Log.i("IMAGE PATH IS NULL","INSIDE getAsyncSelection");
             resultCollector.notifyProblem(E_NO_IMAGE_DATA_FOUND, "Cannot resolve asset path.");
             return;
         }
@@ -512,6 +514,7 @@ class PickerModule extends ReactContextBaseJavaModule implements ActivityEventLi
 
                             resultCollector.notifySuccess(video);
                         } catch (Exception e) {
+                            Log.i("IMAGE PATH IS NULL",e.getMessage());
                             resultCollector.notifyProblem(E_NO_IMAGE_DATA_FOUND, e);
                         }
                     }
@@ -550,8 +553,11 @@ class PickerModule extends ReactContextBaseJavaModule implements ActivityEventLi
         options.inDither = true;
 
         BitmapFactory.decodeFile(path, options);
-
+        Log.i("mime",""+options.outMimeType );
+ 
         if (options.outMimeType == null || options.outWidth == 0 || options.outHeight == 0) {
+       Log.i("width",""+options.outWidth );
+        Log.i("height",""+ options.outHeight );
             throw new Exception("Invalid image selected");
         }
 
@@ -668,6 +674,7 @@ class PickerModule extends ReactContextBaseJavaModule implements ActivityEventLi
                         }
                     }
                 } catch (Exception ex) {
+                    Log.i("CLIP",ex.getMessage());
                     resultCollector.notifyProblem(E_NO_IMAGE_DATA_FOUND, ex.getMessage());
                 }
 
@@ -675,6 +682,7 @@ class PickerModule extends ReactContextBaseJavaModule implements ActivityEventLi
                 Uri uri = data.getData();
 
                 if (uri == null) {
+                     Log.i("Cannot resolve image url","uri null");
                     resultCollector.notifyProblem(E_NO_IMAGE_DATA_FOUND, "Cannot resolve image url");
                     return;
                 }
@@ -685,6 +693,7 @@ class PickerModule extends ReactContextBaseJavaModule implements ActivityEventLi
                     try {
                         getAsyncSelection(activity, uri, false);
                     } catch (Exception ex) {
+                         Log.i("cropping",ex.getMessage());
                         resultCollector.notifyProblem(E_NO_IMAGE_DATA_FOUND, ex.getMessage());
                     }
                 }
@@ -824,3 +833,4 @@ class PickerModule extends ReactContextBaseJavaModule implements ActivityEventLi
         return map;
     }
 }
+
